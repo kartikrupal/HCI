@@ -2,99 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golf Ball UI - CO2 Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fixed Golf UI - CO2 Demo</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px; background-color: #27ae60; color: white; }
-        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); padding: 25px; border-radius: 15px; width: 320px; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; gap: 20px; 
+            padding: 20px; background-color: #27ae60; color: white; 
+            margin: 0; overflow-x: hidden;
+        }
+        .card { 
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); 
+            padding: 20px; border-radius: 15px; width: 90%; max-width: 320px; 
+            text-align: center; border: 1px solid rgba(255,255,255,0.3); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2); 
+        }
         
-        /* --- GOLF BALL BUTTON STYLE --- */
+        /* GOLF BALL BUTTON */
         .golf-ball {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            outline: none;
-            transition: transform 0.1s;
-            /* Creating the spherical look */
+            width: 80px; height: 80px; border-radius: 50%; border: none;
+            cursor: pointer; position: relative; outline: none;
             background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0 60%, #999 100%);
-            /* Creating the dimples using multiple box-shadows */
-            box-shadow: 
-                inset 10px 10px 20px rgba(0,0,0,0.1),
-                inset -5px -5px 15px rgba(255,255,255,0.8),
-                0 10px 15px rgba(0,0,0,0.3);
-            display: inline-block;
-            margin: 10px;
+            box-shadow: inset 5px 5px 15px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.4);
+            display: inline-block; transition: transform 0.1s;
+            -webkit-tap-highlight-color: transparent; /* Fixes blue flash on mobile */
         }
-
-        /* Simulating dimples with a repeating background pattern */
         .golf-ball::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            opacity: 0.3;
-            background-image: radial-gradient(circle, #333 15%, transparent 20%);
-            background-size: 12px 12px;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%; opacity: 0.25;
+            background-image: radial-gradient(circle, #000 15%, transparent 20%);
+            background-size: 10px 10px;
         }
+        .golf-ball:active { transform: scale(0.9); }
 
-        .golf-ball:active { transform: scale(0.95) translateY(5px); }
-
-        /* Style for other components */
-        #touchArea { height: 120px; background: #ffffff33; border: 2px dashed #fff; color: white; display: flex; align-items: center; justify-content: center; border-radius: 10px; touch-action: none; margin-top: 10px; }
-        input { width: 90%; padding: 10px; border-radius: 5px; border: none; margin-top: 10px; }
-        .log { font-weight: bold; margin-top: 15px; color: #f1c40f; min-height: 20px; }
+        #touchArea { 
+            height: 100px; background: rgba(255,255,255,0.1); 
+            border: 2px dashed #fff; display: flex; align-items: center; 
+            justify-content: center; border-radius: 10px; touch-action: none; 
+        }
+        input { 
+            width: 80%; padding: 12px; border-radius: 8px; border: none; 
+            font-size: 16px; /* Prevents auto-zoom on iOS */
+            text-align: center; color: #333;
+        }
+        .log { font-weight: bold; margin-top: 10px; color: #f1c40f; min-height: 1.2em; }
     </style>
 </head>
 <body>
 
-    <h1>Interaction Styles: Golf Edition</h1>
+    <h2>Golf UI Interaction (CO2)</h2>
 
     <div class="card">
-        <h3>1. Mouse Click</h3>
+        <h3>1. Click Interaction</h3>
         <button class="golf-ball" id="golfBall"></button>
-        <div class="log" id="clickLog">Click the ball!</div>
+        <div class="log" id="clickLog">Hit the ball!</div>
     </div>
 
     <div class="card">
         <h3>2. Keyboard Input</h3>
-        <p>Type your score:</p>
-        <input type="text" id="scoreInput" placeholder="Enter text...">
-        <div class="log" id="keyLog">Last key: None</div>
+        <input type="text" id="scoreInput" placeholder="Type here...">
+        <div class="log" id="keyLog">Waiting for input...</div>
     </div>
 
     <div class="card">
         <h3>3. Touch Gesture</h3>
-        <div id="touchArea">Swipe across the green</div>
-        <div class="log" id="touchLog">Waiting for swipe...</div>
+        <div id="touchArea">Swipe Left/Right</div>
+        <div class="log" id="touchLog">Ready for swipe</div>
     </div>
 
     <script>
-        // Mouse Logic
+        // --- 1. CLICK LOGIC ---
         const ball = document.getElementById('golfBall');
         ball.addEventListener('click', () => {
-            document.getElementById('clickLog').innerText = "Hole in one! ⛳";
-            setTimeout(() => { document.getElementById('clickLog').innerText = "Ready for next tee."; }, 1500);
+            document.getElementById('clickLog').innerText = "Nice Shot! ⛳";
+            setTimeout(() => { document.getElementById('clickLog').innerText = "Hit the ball!"; }, 2000);
         });
 
-        // Keyboard Logic
-        const input = document.getElementById('scoreInput');
-        input.addEventListener('keydown', (e) => {
-            document.getElementById('keyLog').innerText = `Input: ${e.key.toUpperCase()}`;
+        // --- 2. KEYBOARD LOGIC (FIXED) ---
+        // Using 'input' event instead of 'keydown' to support mobile keyboards
+        const inputField = document.getElementById('scoreInput');
+        inputField.addEventListener('input', (e) => {
+            const val = e.target.value;
+            const lastChar = val.charAt(val.length - 1);
+            document.getElementById('keyLog').innerText = lastChar ? `Typed: ${lastChar.toUpperCase()}` : "Cleared!";
         });
 
-        // Touch Logic
+        // --- 3. TOUCH LOGIC ---
         const touchArea = document.getElementById('touchArea');
         let startX = 0;
-        touchArea.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+
+        touchArea.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, {passive: true});
+
         touchArea.addEventListener('touchend', (e) => {
-            const diff = startX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 30) {
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > 40) { // Threshold for swipe
                 document.getElementById('touchLog').innerText = diff > 0 ? "Swiped Left! ⬅️" : "Swiped Right! ➡️";
             } else {
-                document.getElementById('touchLog').innerText = "Tapped the grass!";
+                document.getElementById('touchLog').innerText = "Just a tap!";
             }
         });
     </script>
