@@ -3,71 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fixed Golf UI - CO2 Demo</title>
+    <title>HCI Experiment 3 - Golf UI</title>
     <style>
+        :root {
+            --golf-green: #27ae60;
+            --deep-green: #1e8449;
+            --soft-white: #f8f9fa;
+        }
+
         body { 
-            font-family: 'Segoe UI', sans-serif; 
-            display: flex; flex-direction: column; align-items: center; gap: 20px; 
-            padding: 20px; background-color: #27ae60; color: white; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            display: flex; flex-direction: column; align-items: center; gap: 25px; 
+            padding: 30px 20px; background-color: var(--soft-white); color: #333; 
             margin: 0; overflow-x: hidden;
         }
+
+        h2 { color: var(--deep-green); margin-bottom: 10px; text-align: center; }
+
         .card { 
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); 
-            padding: 20px; border-radius: 15px; width: 90%; max-width: 320px; 
-            text-align: center; border: 1px solid rgba(255,255,255,0.3); 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2); 
+            background: var(--golf-green); 
+            padding: 25px; border-radius: 20px; width: 95%; max-width: 340px; 
+            text-align: center; border: none;
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3); 
+            color: white;
+            transition: transform 0.2s ease;
         }
-        
+
+        .card h3 { margin-top: 0; font-size: 1.1rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+
         /* GOLF BALL BUTTON */
+        .ball-container {
+            background: rgba(0,0,0,0.15); /* Simulated hole */
+            width: 90px; height: 90px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 15px auto; box-shadow: inset 0 4px 8px rgba(0,0,0,0.2);
+        }
+
         .golf-ball {
-            width: 80px; height: 80px; border-radius: 50%; border: none;
+            width: 75px; height: 75px; border-radius: 50%; border: none;
             cursor: pointer; position: relative; outline: none;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0 60%, #999 100%);
-            box-shadow: inset 5px 5px 15px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.4);
+            background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0 60%, #bbb 100%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             display: inline-block; transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent; /* Fixes blue flash on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
         .golf-ball::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%; opacity: 0.25;
-            background-image: radial-gradient(circle, #000 15%, transparent 20%);
+            border-radius: 50%; opacity: 0.2;
+            background-image: radial-gradient(circle, #000 15%, transparent 22%);
             background-size: 10px 10px;
         }
-        .golf-ball:active { transform: scale(0.9); }
+        .golf-ball:active { transform: scale(0.85); }
 
-        #touchArea { 
-            height: 100px; background: rgba(255,255,255,0.1); 
-            border: 2px dashed #fff; display: flex; align-items: center; 
-            justify-content: center; border-radius: 10px; touch-action: none; 
-        }
+        /* INPUT FIELD */
         input { 
-            width: 80%; padding: 12px; border-radius: 8px; border: none; 
-            font-size: 16px; /* Prevents auto-zoom on iOS */
-            text-align: center; color: #333;
+            width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); 
+            font-size: 16px; text-align: center; color: #333; background: white;
+            outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .log { font-weight: bold; margin-top: 10px; color: #f1c40f; min-height: 1.2em; }
+        input:focus { border-color: #f1c40f; }
+
+        /* TOUCH AREA */
+        #touchArea { 
+            height: 100px; background: rgba(255,255,255,0.2); 
+            border: 2px dashed rgba(255,255,255,0.6); display: flex; align-items: center; 
+            justify-content: center; border-radius: 15px; touch-action: none; 
+            margin: 10px 0; font-style: italic;
+        }
+
+        .log { font-weight: 600; margin-top: 15px; color: #f1c40f; min-height: 1.2em; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <h2>Golf UI Interaction (CO2)</h2>
+    <h2>HCI EXPERIMENT 3<br>Golf UI Interaction</h2>
 
     <div class="card">
         <h3>1. Click Interaction</h3>
-        <button class="golf-ball" id="golfBall"></button>
-        <div class="log" id="clickLog">Hit the ball!</div>
+        <div class="ball-container">
+            <button class="golf-ball" id="golfBall"></button>
+        </div>
+        <div class="log" id="clickLog">Putt the ball!</div>
     </div>
 
     <div class="card">
         <h3>2. Keyboard Input</h3>
-        <input type="text" id="scoreInput" placeholder="Type here...">
-        <div class="log" id="keyLog">Waiting for input...</div>
+        <input type="text" id="scoreInput" placeholder="Type name or score...">
+        <div class="log" id="keyLog">Waiting for strokes...</div>
     </div>
 
     <div class="card">
         <h3>3. Touch Gesture</h3>
         <div id="touchArea">Swipe Left/Right</div>
-        <div class="log" id="touchLog">Ready for swipe</div>
+        <div class="log" id="touchLog">Scan the green</div>
     </div>
 
     <script>
@@ -75,16 +103,15 @@
         const ball = document.getElementById('golfBall');
         ball.addEventListener('click', () => {
             document.getElementById('clickLog').innerText = "Nice Shot! ⛳";
-            setTimeout(() => { document.getElementById('clickLog').innerText = "Hit the ball!"; }, 2000);
+            setTimeout(() => { document.getElementById('clickLog').innerText = "Putt the ball!"; }, 2000);
         });
 
-        // --- 2. KEYBOARD LOGIC (FIXED) ---
-        // Using 'input' event instead of 'keydown' to support mobile keyboards
+        // --- 2. KEYBOARD LOGIC ---
         const inputField = document.getElementById('scoreInput');
         inputField.addEventListener('input', (e) => {
             const val = e.target.value;
             const lastChar = val.charAt(val.length - 1);
-            document.getElementById('keyLog').innerText = lastChar ? `Typed: ${lastChar.toUpperCase()}` : "Cleared!";
+            document.getElementById('keyLog').innerText = lastChar ? `Input: ${lastChar.toUpperCase()}` : "Cleared!";
         });
 
         // --- 3. TOUCH LOGIC ---
@@ -99,7 +126,7 @@
             const endX = e.changedTouches[0].clientX;
             const diff = startX - endX;
 
-            if (Math.abs(diff) > 40) { // Threshold for swipe
+            if (Math.abs(diff) > 40) {
                 document.getElementById('touchLog').innerText = diff > 0 ? "Swiped Left! ⬅️" : "Swiped Right! ➡️";
             } else {
                 document.getElementById('touchLog').innerText = "Just a tap!";
