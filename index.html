@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Ball UI - CO2 Demo</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px; background-color: #27ae60; color: white; }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); padding: 25px; border-radius: 15px; width: 320px; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+        
+        /* --- GOLF BALL BUTTON STYLE --- */
+        .golf-ball {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            transition: transform 0.1s;
+            /* Creating the spherical look */
+            background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0 60%, #999 100%);
+            /* Creating the dimples using multiple box-shadows */
+            box-shadow: 
+                inset 10px 10px 20px rgba(0,0,0,0.1),
+                inset -5px -5px 15px rgba(255,255,255,0.8),
+                0 10px 15px rgba(0,0,0,0.3);
+            display: inline-block;
+            margin: 10px;
+        }
+
+        /* Simulating dimples with a repeating background pattern */
+        .golf-ball::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            opacity: 0.3;
+            background-image: radial-gradient(circle, #333 15%, transparent 20%);
+            background-size: 12px 12px;
+        }
+
+        .golf-ball:active { transform: scale(0.95) translateY(5px); }
+
+        /* Style for other components */
+        #touchArea { height: 120px; background: #ffffff33; border: 2px dashed #fff; color: white; display: flex; align-items: center; justify-content: center; border-radius: 10px; touch-action: none; margin-top: 10px; }
+        input { width: 90%; padding: 10px; border-radius: 5px; border: none; margin-top: 10px; }
+        .log { font-weight: bold; margin-top: 15px; color: #f1c40f; min-height: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Interaction Styles: Golf Edition</h1>
+
+    <div class="card">
+        <h3>1. Mouse Click</h3>
+        <button class="golf-ball" id="golfBall"></button>
+        <div class="log" id="clickLog">Click the ball!</div>
+    </div>
+
+    <div class="card">
+        <h3>2. Keyboard Input</h3>
+        <p>Type your score:</p>
+        <input type="text" id="scoreInput" placeholder="Enter text...">
+        <div class="log" id="keyLog">Last key: None</div>
+    </div>
+
+    <div class="card">
+        <h3>3. Touch Gesture</h3>
+        <div id="touchArea">Swipe across the green</div>
+        <div class="log" id="touchLog">Waiting for swipe...</div>
+    </div>
+
+    <script>
+        // Mouse Logic
+        const ball = document.getElementById('golfBall');
+        ball.addEventListener('click', () => {
+            document.getElementById('clickLog').innerText = "Hole in one! ⛳";
+            setTimeout(() => { document.getElementById('clickLog').innerText = "Ready for next tee."; }, 1500);
+        });
+
+        // Keyboard Logic
+        const input = document.getElementById('scoreInput');
+        input.addEventListener('keydown', (e) => {
+            document.getElementById('keyLog').innerText = `Input: ${e.key.toUpperCase()}`;
+        });
+
+        // Touch Logic
+        const touchArea = document.getElementById('touchArea');
+        let startX = 0;
+        touchArea.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+        touchArea.addEventListener('touchend', (e) => {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 30) {
+                document.getElementById('touchLog').innerText = diff > 0 ? "Swiped Left! ⬅️" : "Swiped Right! ➡️";
+            } else {
+                document.getElementById('touchLog').innerText = "Tapped the grass!";
+            }
+        });
+    </script>
+</body>
+</html>
